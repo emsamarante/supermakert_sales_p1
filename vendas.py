@@ -12,6 +12,7 @@ load_figure_template("minty")
 app = dash.Dash(external_stylesheets=[dbc.themes.MINTY])
 app.title = "Dashboard de Vendas"
 app._favicon = "logo.ico"
+server = app.server
 
 
 app.layout = layout
@@ -97,4 +98,4 @@ def update_graph(cities_selected, variable_selected):
     return fig_city, fig_gender, fig_payment, fig_income_date, fig_income
 
 
-app.run_server(debug=False, port=8050, host='0.0.0.0')
+app.run_server(debug=False)
