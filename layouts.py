@@ -1,12 +1,23 @@
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 import pandas as pd
+from dash_bootstrap_templates import ThemeSwitchAIO
 
 
+######################### Styles
+config_graph={"displayModeBar": False, "showTips": False}
+template_theme1 = "cosmo"
+template_theme2 = "solar"
+url_theme1 = dbc.themes.COSMO
+url_theme2 = dbc.themes.SOLAR
+
+######################### Data
 df = pd.read_csv("data/supermarket_sales - Sheet1.csv")
 df['Date'] = pd.to_datetime(df['Date'])
 df.rename(columns={'gross income': 'Gross Income'}, inplace=True)
 
+
+######################## Components
 img = dbc.CardImg(src="static/images/logo.png",
                   style={'position': 'absolute', 'bottom': '10px'})
 
@@ -78,9 +89,11 @@ content = [html.Div(
     dbc.Container(
         [
             html.H2("Data Clarity", style={
-                    "font-family": "uniform black", "font-size": "32px",
+                    "font-family": "uniform black", "font-size": "30px",
                     "text-align": "center", 'font-weight': 'bold'}),
             html.Hr(className="my-2"),
+            html.Br(),
+            ThemeSwitchAIO(aio_id="theme", themes=[url_theme1, url_theme2]),
             html.Br(),
             content_descricao,
             html.Hr(className="my-2"),
@@ -107,6 +120,8 @@ content = [html.Div(
     className="p-3 rounded-3",
 )]
 
+
+################## Menu 
 aside = dbc.Card(content,
                  style={
                      'height': '95vh', 'margin-left': '20px', 'padding': '1px',
@@ -116,41 +131,42 @@ left = dbc.Col([aside,
                 ], sm=2)
 
 
-# lado direito do dash
-# Graficos
+################### Rows of dash
 l11 = html.Div(children=[
                dcc.Graph(id='city_fig', style={
-                         'height': '35vh'})
+                         'height': '32vh'}, config=config_graph)
                ])
 
 l12 = html.Div(children=[
-               dcc.Graph(id='pay_fig', style={'height': '35vh'})
+               dcc.Graph(id='pay_fig', style={'height': '32vh', }, config=config_graph)
                ])
 
 l13 = html.Div(children=[
-               dcc.Graph(id='gender_fig', style={'height': '35vh'})
+               dcc.Graph(id='gender_fig', style={'height': '32vh'}, config=config_graph)
                ])
 
 
 l21 = html.Div(children=[
-               dcc.Graph(id='income_per_date', style={'height': '30vh'})
+               dcc.Graph(id='income_per_date', style={'height': '29vh'}, config=config_graph)
                ])
 
 
 l31 = html.Div(children=[
-               dcc.Graph(id='income_per_product', style={'height': '30vh'})
+               dcc.Graph(id='income_per_product', style={'height': '29vh'}, config=config_graph)
                ])
 
 linha1 = dbc.Row([
     dbc.Col([l11], sm=4),
     dbc.Col([l12], sm=4),
     dbc.Col([l13], sm=4)
-], style={'height': '35vh'})
+], style={'height': '33vh', 'margin-top':'2vh'})
 
-linha2 = dbc.Row([l21], style={'height': '30vh'})
+linha2 = dbc.Row([l21], style={'height': '29vh', 'margin-top':'2vh'})
 
-linha3 = dbc.Row([l31], style={'height': '25vh'})
+linha3 = dbc.Row([l31], style={'height': '29vh', 'margin-top':'2vh'})
 
+
+###################### Content of dashboard
 right = dbc.Col(
     dbc.Row([
         linha1,
@@ -160,7 +176,7 @@ right = dbc.Col(
     sm=10)
 
 
-# Definindo o layout
+##################### Layout of dashboard
 layout = html.Div([
     dbc.Row([
         left,

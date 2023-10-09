@@ -2,14 +2,23 @@ import dash
 from dash.dependencies import Output, Input, State
 from dash_bootstrap_templates import load_figure_template
 import dash_bootstrap_components as dbc
+from dash_bootstrap_templates import ThemeSwitchAIO
+
 
 from layouts import layout, df
 import numpy as np
 import plotly.express as px
 
 
-load_figure_template("minty")
-app = dash.Dash(external_stylesheets=[dbc.themes.MINTY])
+
+template_theme1 = "cosmo"
+template_theme2 = "solar"
+url_theme1 = dbc.themes.COSMO
+url_theme2 = dbc.themes.SOLAR
+
+
+#load_figure_template("cosmo")
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.COSMO])
 app.title = "Dashboard de Vendas"
 app._favicon = "logo.ico"
 server = app.server
@@ -34,13 +43,15 @@ def toggle_collapse(n, is_open):
      Output('pay_fig', 'figure'),
      Output('gender_fig', 'figure'),
      Output('income_per_date', 'figure'),
-     Output('income_per_product', 'figure')
+     Output('income_per_product', 'figure'),
      ],
 
     [Input("switches-input", 'value'),
-     Input("radio-selected-style", 'value')]
+     Input("radio-selected-style", 'value'),
+     Input(ThemeSwitchAIO.ids.switch("theme"), "value")]
 )
-def update_graph(cities_selected, variable_selected):
+def update_graph(cities_selected, variable_selected, toggle):
+    template = template_theme1 if toggle else template_theme2
     operation = np.sum if variable_selected == "Gross Income" else np.mean
 
     if (variable_selected == "Gross Income"):
@@ -84,12 +95,12 @@ def update_graph(cities_selected, variable_selected):
 
     for fig in [fig_city, fig_gender, fig_payment, fig_income, fig_income_date]:
         fig.update_layout(
-            margin={'l': 60, 'b': 40, 't': 70}, template='minty',
+            margin={'l': 60, 'b': 40, 't': 70}, template=template,
             title=dict(font=dict(size=18),
                        automargin=False, yref='paper'), title_x=0,
         )
     fig_payment.update_layout(
-        margin={'l': 60, 'b': 40, 't': 70}, template='minty',
+        margin={'l': 60, 'b': 40, 't': 70}, template=template,
         title=dict(font=dict(size=18),
                    automargin=False, yref='paper'), title_x=0,
         yaxis_title=None,
@@ -97,5 +108,5 @@ def update_graph(cities_selected, variable_selected):
 
     return fig_city, fig_gender, fig_payment, fig_income_date, fig_income
 
-
-app.run_server(debug=False)
+if __name__ == '__main__':
+    app.run_server(debug=False)
