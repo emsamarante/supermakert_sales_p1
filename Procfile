@@ -1,1 +1,1 @@
-web: gunicorn vendas:app
+web: gunicorn vendas:server
